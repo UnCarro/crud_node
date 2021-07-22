@@ -4,16 +4,40 @@ const bodyParser = require("body-parser");
 const { Sequelize, Model, DataTypes } = require("sequelize");
 // Asignación de módulos;
 const app = express();
-const sequelize = new Sequelize("sqlite::memory");
+//app.use(bodyParser.urlencoded({ extended: true }));
+const sequelize = new Sequelize("alfil", "root", "", {
+  host: "localhost",
+  dialect: "mysql",
+});
+
+// Verificación;
+sequelize
+  .authenticate()
+  .then(function () {
+    console.log("success");
+  })
+  .catch(function (error) {
+    console.log("error: " + error);
+  });
+
 /* Construcción de módelo de datos para MySQL; */
-class peon extends Model {}
+class Image extends Model {}
+Image.init(
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true },
+    name: { type: DataTypes.STRING },
+    comentario: { type: DataTypes.STRING },
+    url: { type: DataTypes.STRING },
+  },
+  { sequelize, modelName: "image" }
+);
 
-//
-app.use(bodyParser.urlencoded({ extended: true }));
+//Image.create({ id: 1, name: "Prueba", comentario: "Sisis", url: "asfahsvf" });
 
-/* get y post*/
+/* get y post */
 
 app.get("/", function (req, res) {
+  console.log(req);
   res.send("funciona");
 });
 

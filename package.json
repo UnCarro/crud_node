@@ -1,17 +1,26 @@
 {
-  "name": "colektia_crud",
+  "name": "api",
   "version": "1.0.0",
-  "description": "Prueba técnica para colektia",
-  "main": "index.js",
+  "description": "",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Marco Cardenas",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UnCarro/crud_node.git"
+  },
+  "keywords": [],
+  "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UnCarro/crud_node/issues"
+  },
+  "homepage": "https://github.com/UnCarro/crud_node#readme",
   "dependencies": {
-    "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "mysql": "^2.18.1",
+    "mysql2": "^2.2.5",
     "sequelize": "^6.6.5"
   }
 }
