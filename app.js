@@ -1,6 +1,7 @@
 // Importación de módulos;
 const express = require("express");
 const multer = require("multer");
+const fs = require("fs");
 const cors = require("cors");
 const { Sequelize, Model, DataTypes } = require("sequelize");
 
@@ -52,7 +53,6 @@ sequelize
 class Image extends Model {}
 Image.init(
   {
-    id: { type: DataTypes.INTEGER, primaryKey: true },
     name: { type: DataTypes.STRING },
     comentario: { type: DataTypes.STRING },
     url: { type: DataTypes.STRING },
@@ -63,14 +63,13 @@ Image.init(
 // métodos para las llamadas CRUD
 
 function showAll() {
-  Image.findAll({
-    attributes: ["id"],
-  });
+  return Image.findAll()
+    .then((images) => {})
+    .catch();
 }
 
-function createImage(imageId, imageName, imageComment, imageUrl) {
+function createImage(imageName, imageComment, imageUrl) {
   Image.create({
-    id: imageId,
     name: imageName,
     comentario: imageComment,
     url: imageUrl,
@@ -93,33 +92,49 @@ function updateImage(imageId, newName, newComentario, newUrl) {
 }
 
 //Image.sync({ force: true });
-//updateImage(2, "hedionda", "a vainilla", "https://esverdad.com");
-//createImage(1, "daniel", "fullstack", "./images/hydra.jpg");
+//updateImage();
+//createImage();
 //deleteImage(3);
-//showAll();
 
 /* enrutadores */
 
 app.get("/", function (req, res) {
-  res.send("<h1>Funciona</h1>");
+  res.send(showAll());
 });
 
 app.get("/delete", function (req, res) {});
 
 app.post("/upload", upload.single("file"), (req, res) => {
   res.json({ file: req.file });
-  console.log(res.json());
-
-  /*let imageFile = req.files.file;
-  imageFile.mv(`./images/${imageFile.name}`, (err) => {
-    if (err) return res.status(500).send({ message: err });
-    return res.status(200).send({ message: "File upload" });
-  });*/
+  //console.log(res.json());
+  let RenamedImage = req.file.filename;
+  let OriginalName = req.file.originalname;
+  const nameInDB = Image.findAll({
+    where: {
+      name: OriginalName,
+    },
+  }).then((images) => {
+    console.log(images);
+  });
+  console.log(nameInDB);
+  fs.rename(
+    "./images/" + RenamedImage,
+    "./images/" + RenamedImage + ".jpg",
+    (err) => {
+      fs.stat("./images/" + RenamedImage + ".jpg", (err, stats) => {
+        console.log(`stats: ${JSON.stringify(stats)}`);
+      });
+    }
+  );
+  const comment = "";
+  createImage(
+    RenamedImage + ".jpg",
+    comment,
+    "./images/" + RenamedImage + ".jpg"
+  );
 });
 
-app.post("/update", function (req, res) {
-  res.send("");
-});
+app.post("/update", function (req, res) {});
 app.post("/", function (req, res) {
   /* req.body.data;
   req.body.effect(data);
